@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using UnityEngine;
 using Battlehub.MeshDeformer2;
 using TMPro;
-using Facebook.Unity;
+//using Facebook.Unity;
 
 
 [System.Serializable]
@@ -30,17 +30,17 @@ public class GameManager : MonoBehaviour
 
     private void InitCallback()
     {
-        if (FB.IsInitialized)
-        {
-            // Signal an app activation App Event
-            FB.ActivateApp();
-            // Continue with Facebook SDK
-            // ...
-        }
-        else
-        {
-            Debug.Log("Failed to Initialize the Facebook SDK");
-        }
+        // if (FB.IsInitialized)
+        // {
+        //     // Signal an app activation App Event
+        //     FB.ActivateApp();
+        //     // Continue with Facebook SDK
+        //     // ...
+        // }
+        // else
+        // {
+        //     Debug.Log("Failed to Initialize the Facebook SDK");
+        // }
     }
     
     private void OnHideUnity(bool isGameShown)
@@ -60,16 +60,16 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        if (!FB.IsInitialized)
-        {
-            // Initialize the Facebook SDK
-            FB.Init(InitCallback, OnHideUnity);
-        }
-        else
-        {
-            // Already initialized, signal an app activation App Event
-            FB.ActivateApp();
-        }
+        // if (!FB.IsInitialized)
+        // {
+        //     // Initialize the Facebook SDK
+        //     FB.Init(InitCallback, OnHideUnity);
+        // }
+        // else
+        // {
+        //     // Already initialized, signal an app activation App Event
+        //     FB.ActivateApp();
+        // }
         if (CollideMesh == null)
             CollideMesh = new CollideEvent();
         if (OnStart == null)

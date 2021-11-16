@@ -39,6 +39,7 @@ public class TrainController : MonoBehaviour
     private Coroutine LookCoroutine;
     Vector3 temp;
     Vector3 PoisitionBeforeTurn;
+    
     void Update()
     {
         if (Vector3.Distance(transform.position, pos) < 0.001f && !stop)

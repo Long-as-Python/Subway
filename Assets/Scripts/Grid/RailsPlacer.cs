@@ -8,12 +8,14 @@ public class RailsPlacer : MonoBehaviour
 {
     private Grid grid;
     public List<PlacedRail> placedRails;
+    public List<RailToPlace> railToPlace;
     public PlacedRail endRail;
     [SerializeField] private GameObject Rails;
     [SerializeField] private GameObject poinMarker;
     void Awake()
     {
         placedRails = new List<PlacedRail>();
+        railToPlace = new List<RailToPlace>();
         grid = FindObjectOfType<Grid>();
     }
 
@@ -49,6 +51,7 @@ public class RailsPlacer : MonoBehaviour
         //}
     }
 
+
     private void CheckPlacament(GameObject temp, RaycastHit hit)
     {
         if (temp.tag != "Rail" && temp.tag != "Generated Block" && temp.tag != "Wall Block" && temp.tag != "Bonus" && temp.tag != "Drill" && temp.tag != "train")
@@ -65,8 +68,8 @@ public class RailsPlacer : MonoBehaviour
                     start.ClickZ = Mathf.RoundToInt(finalPosition.z);
                     start.height = Mathf.RoundToInt(finalPosition.x) - 0.4f;
                     start.width = Mathf.RoundToInt(finalPosition.z);
-                    PlaceRailNear(finalPosition, temp, start);
-
+                    RailToPlace tempRail = new RailToPlace() { pos = finalPosition, temp = temp, start = start};
+                    railToPlace.Add(tempRail);
                 }
                 else if (Mathf.RoundToInt(finalPosition.z) == placedRails[placedRails.Count - 1].ClickZ + 1 && Mathf.RoundToInt(finalPosition.x) == placedRails[placedRails.Count - 1].ClickX)
                 {
@@ -76,7 +79,8 @@ public class RailsPlacer : MonoBehaviour
                     start.ClickZ = Mathf.RoundToInt(finalPosition.z);
                     start.height = Mathf.RoundToInt(finalPosition.x);
                     start.width = Mathf.RoundToInt(finalPosition.z) - 0.4f;
-                    PlaceRailNear(finalPosition, temp, start);
+                    RailToPlace tempRail = new RailToPlace() { pos = finalPosition, temp = temp, start = start};
+                    railToPlace.Add(tempRail);
                 }
                 else if (Mathf.RoundToInt(finalPosition.x) == placedRails[placedRails.Count - 1].ClickX - 1 && Mathf.RoundToInt(finalPosition.z) == placedRails[placedRails.Count - 1].ClickZ)
                 {
@@ -86,7 +90,8 @@ public class RailsPlacer : MonoBehaviour
                     start.ClickZ = Mathf.RoundToInt(finalPosition.z);
                     start.height = Mathf.RoundToInt(finalPosition.x) + 0.4f;
                     start.width = Mathf.RoundToInt(finalPosition.z);
-                    PlaceRailNear(finalPosition, temp, start);
+                    RailToPlace tempRail = new RailToPlace() { pos = finalPosition, temp = temp, start = start};
+                    railToPlace.Add(tempRail);
                 }
                 else if (Mathf.RoundToInt(finalPosition.z) == placedRails[placedRails.Count - 1].ClickZ - 1 && Mathf.RoundToInt(finalPosition.x) == placedRails[placedRails.Count - 1].ClickX)
                 {
@@ -96,12 +101,20 @@ public class RailsPlacer : MonoBehaviour
                     start.ClickZ = Mathf.RoundToInt(finalPosition.z);
                     start.height = Mathf.RoundToInt(finalPosition.x);
                     start.width = Mathf.RoundToInt(finalPosition.z) + 0.4f;
-                    PlaceRailNear(finalPosition, temp, start);
+                    RailToPlace tempRail = new RailToPlace() { pos = finalPosition, temp = temp, start = start};
+                    railToPlace.Add(tempRail);
                 }
             }
         }
     }
 
+    public void OnMouseUp()
+    {
+       foreach(RailToPlace element in railToPlace){
+           PlaceRailNear(element.pos, element.temp, element.start);
+       }
+       railToPlace.Clear();
+    }
 
     private void PlaceRailNear(Vector3 pos, GameObject temp, PlacedRail start)
     {
@@ -120,5 +133,12 @@ public class RailsPlacer : MonoBehaviour
         public float ClickX;
         public float ClickZ;
         public GameObject PointMarker;
+    }
+
+    public class RailToPlace
+    {
+        public Vector3 pos;
+        public GameObject temp;
+        public PlacedRail start;
     }
 }
