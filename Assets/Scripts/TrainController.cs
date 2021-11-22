@@ -39,7 +39,7 @@ public class TrainController : MonoBehaviour
     private Coroutine LookCoroutine;
     Vector3 temp;
     Vector3 PoisitionBeforeTurn;
-    
+
     void Update()
     {
         if (Vector3.Distance(transform.position, pos) < 0.001f && !stop)
@@ -75,6 +75,7 @@ public class TrainController : MonoBehaviour
                 // StartCoroutine(LookAt(temp));
             }
         }
+
         else if (stop)
         {
             Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.endRail.height + 6, 1, GameManager.Instance.railsPlacer.endRail.width);

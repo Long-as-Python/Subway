@@ -56,8 +56,7 @@ public class AnalyticsController : MonoBehaviour
 
     private void Event_analitics(string start_finish)
     {
-        AppMetrica.Instance.ReportEvent(start_finish, event_parameters);
-        AppMetrica.Instance.SendEventsBuffer();
+        
     }
 
     public void ResetVar()

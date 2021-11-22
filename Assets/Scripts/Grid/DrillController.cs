@@ -6,7 +6,7 @@ using Battlehub.MeshDeformer2;
 
 public class DrillController : MonoBehaviour
 {
-    public int speed = 2 ;
+    public int speed = 2;
     private Vector3 pos;
     public DrillController Instance { set; get; }
     public List<GameObject> RailPoints;
@@ -44,50 +44,65 @@ public class DrillController : MonoBehaviour
     Vector3 temp;
     bool railPlacedCheck = false;
     Vector3 PoisitionBeforeTurn;
+    bool fingerUp = false;
+
     void Update()
     {
-        if (Vector3.Distance(transform.position, pos) < 0.001f && !stop)
+        if (Input.touchCount == 1)
         {
-            if (GameManager.Instance.railsPlacer.placedRails[count].PointMarker != null)
-                Destroy(GameManager.Instance.railsPlacer.placedRails[count].PointMarker);
-            if (GameManager.Instance.railsPlacer.placedRails[count].ClickX == GameManager.Instance.railsPlacer.endRail.height - 1 && GameManager.Instance.railsPlacer.placedRails[count].ClickZ == GameManager.Instance.railsPlacer.endRail.width)
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Ended)
             {
-                StartCoroutine(ToFinalPos());
-                PoisitionBeforeTurn = transform.position;
-                temp = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, transform.position.y, GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
-                Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1, GameManager.Instance.railsPlacer.endRail.ClickZ);
-                Debug.Log(goingTo);
-                pos = goingTo;
-                point = peekingPoint(goingTo, new Vector3(GameManager.Instance.railsPlacer.endRail.height, 1, GameManager.Instance.railsPlacer.endRail.width));
-                turnCounter = 0.0f;
-                GameManager.Instance.StartTrain.Invoke();
-                stop = true;
+                fingerUp = true;
             }
-            else if (count < GameManager.Instance.railsPlacer.placedRails.Count - 1)
+            else
+                fingerUp = false;
+        }
+        if (fingerUp)
+        {
+            if (Vector3.Distance(transform.position, pos) < 0.001f && !stop)
             {
-                railPlacedCheck = false;
-                PoisitionBeforeTurn = transform.position;
-                temp = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, transform.position.y, GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
-                count++;
-                Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].height, 1, GameManager.Instance.railsPlacer.placedRails[count].width);
-                pos = goingTo;
-                point = peekingPoint(goingTo);
-                turnCounter = 0.0f;
+                if (GameManager.Instance.railsPlacer.placedRails[count].PointMarker != null)
+                    Destroy(GameManager.Instance.railsPlacer.placedRails[count].PointMarker);
+                if (GameManager.Instance.railsPlacer.placedRails[count].ClickX == GameManager.Instance.railsPlacer.endRail.height - 1 && GameManager.Instance.railsPlacer.placedRails[count].ClickZ == GameManager.Instance.railsPlacer.endRail.width)
+                {
+                    StartCoroutine(ToFinalPos());
+                    PoisitionBeforeTurn = transform.position;
+                    temp = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, transform.position.y, GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
+                    Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1, GameManager.Instance.railsPlacer.endRail.ClickZ);
+                    Debug.Log(goingTo);
+                    pos = goingTo;
+                    point = peekingPoint(goingTo, new Vector3(GameManager.Instance.railsPlacer.endRail.height, 1, GameManager.Instance.railsPlacer.endRail.width));
+                    turnCounter = 0.0f;
+                    GameManager.Instance.StartTrain.Invoke();
+                    stop = true;
+                }
+                else if (count < GameManager.Instance.railsPlacer.placedRails.Count - 1)
+                {
+                    railPlacedCheck = false;
+                    PoisitionBeforeTurn = transform.position;
+                    temp = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, transform.position.y, GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
+                    count++;
+                    Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].height, 1, GameManager.Instance.railsPlacer.placedRails[count].width);
+                    pos = goingTo;
+                    point = peekingPoint(goingTo);
+                    turnCounter = 0.0f;
+                }
             }
-        }
 
-        if (turnCounter < 1.0f && isTurn)
-        {
-            PlaceRail(pos, temp + (pos - temp) * 0.6f, PoisitionBeforeTurn + (temp - PoisitionBeforeTurn) * 0.4f);
-            turnCounter += 2.0f * Time.deltaTime;
-            transform.position = GetPointByLerp(PoisitionBeforeTurn, PoisitionBeforeTurn + (temp - PoisitionBeforeTurn) * 0.4f, temp + (pos - temp) * 0.6f, pos, turnCounter);
-            transform.rotation = Quaternion.LookRotation(GetFirstDerivate(PoisitionBeforeTurn, PoisitionBeforeTurn + (temp - PoisitionBeforeTurn) * 0.4f, temp + (pos - temp) * 0.6f, pos, turnCounter));
+            if (turnCounter < 1.0f && isTurn)
+            {
+                PlaceRail(pos, temp + (pos - temp) * 0.6f, PoisitionBeforeTurn + (temp - PoisitionBeforeTurn) * 0.4f);
+                turnCounter += 2.0f * Time.deltaTime;
+                transform.position = GetPointByLerp(PoisitionBeforeTurn, PoisitionBeforeTurn + (temp - PoisitionBeforeTurn) * 0.4f, temp + (pos - temp) * 0.6f, pos, turnCounter);
+                transform.rotation = Quaternion.LookRotation(GetFirstDerivate(PoisitionBeforeTurn, PoisitionBeforeTurn + (temp - PoisitionBeforeTurn) * 0.4f, temp + (pos - temp) * 0.6f, pos, turnCounter));
 
-        }
-        else if (!isTurn)
-        {
-            float step = speed * Time.deltaTime;
-            transform.position = Vector3.MoveTowards(transform.position, pos, step);
+            }
+            else if (!isTurn)
+            {
+                float step = speed * Time.deltaTime;
+                transform.position = Vector3.MoveTowards(transform.position, pos, step);
+            }
         }
     }
 
