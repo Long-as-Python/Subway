@@ -6,7 +6,7 @@ using Battlehub.MeshDeformer2;
 
 public class DrillController : MonoBehaviour
 {
-    public int speed = 2;
+    public float speed = 2;
     private Vector3 pos;
     public DrillController Instance { set; get; }
     public List<GameObject> RailPoints;
