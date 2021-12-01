@@ -18,6 +18,9 @@ TagManager:
   - PointMarker
   - train
   - Bonus
+  - water
+  - WaterMill
+  - WaterFinish
   layers:
   - Default
   - TransparentFX

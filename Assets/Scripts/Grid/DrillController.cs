@@ -48,16 +48,16 @@ public class DrillController : MonoBehaviour
 
     void Update()
     {
-        //if (Input.touchCount == 1)
-        //{
-        //    Touch touch = Input.GetTouch(0);
-        //    if (touch.phase == TouchPhase.Ended)
-        //    {
-        //        fingerUp = true;
-        //    }
-        //    else
-        //        fingerUp = false;
-        //}
+        if (Input.touchCount == 1)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Ended)
+            {
+                fingerUp = true;
+            }
+            else
+                fingerUp = false;
+        }
         if (fingerUp || Input.GetKey(KeyCode.P))
         {
             if (Vector3.Distance(transform.position, pos) < 0.001f && !stop)

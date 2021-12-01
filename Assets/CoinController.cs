@@ -19,4 +19,13 @@ public class CoinController : MonoBehaviour
         Debug.Log("Coin collected");
         Destroy(this.gameObject);
     }
+
+    void Awake()
+    {
+        float check = Random.Range(0, 100);
+        if (check < 60)
+        {
+            gameObject.SetActive(false);
+        }
+    }
 }

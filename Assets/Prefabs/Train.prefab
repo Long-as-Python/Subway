@@ -45,7 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61438b111ced8a4409c92e068d625c36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  speed: 5
+  water: {fileID: 7275030507111189586, guid: 37e1971348214d943a6daef066a011b1, type: 3}
 --- !u!54 &-7944017387883336044
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -128,6 +129,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 3ccea77ffcdd69645b280997254b2731, type: 3}
       propertyPath: m_Name
       value: train2 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3ccea77ffcdd69645b280997254b2731, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ccea77ffcdd69645b280997254b2731, type: 3}

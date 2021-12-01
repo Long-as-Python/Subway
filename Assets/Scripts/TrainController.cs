@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections;
-
+using System;
 public class TrainController : MonoBehaviour
 {
     public int speed;
     private Vector3 pos;
+    public GameObject water;
+    public GameObject startWater;
 
     private void Start()
     {
@@ -98,6 +100,8 @@ public class TrainController : MonoBehaviour
 
     IEnumerator Delay()
     {
+        DrillConeController controller = GameObject.FindGameObjectWithTag("WaterMill").GetComponent(typeof(DrillConeController)) as DrillConeController;
+        controller.check = true;
         yield return new WaitForSeconds(1f);
         GameManager.Instance.OnWin.Invoke();
     }
@@ -139,6 +143,7 @@ public class TrainController : MonoBehaviour
 
     Vector3 peekingPoint(Vector3 goingTo)
     {
+
         Vector3 temppos = transform.position;
         if (GameManager.Instance.railsPlacer.placedRails[count - 1].height == goingTo.x || GameManager.Instance.railsPlacer.placedRails[count - 1].width == goingTo.z)
         {
@@ -146,49 +151,67 @@ public class TrainController : MonoBehaviour
             transform.LookAt(look);
             isTurn = false;
             temppos = pos;
+            PlaceWater();
         }
         else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.z > GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
         {
             isTurn = true;
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.left * 0.2f;
+            PlaceWater();
         }
         else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.z < GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
         {
             isTurn = true;
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.right * 0.2f;
+            PlaceWater();
         }
         else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.z > GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
         {
             isTurn = true;
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.right * 0.2f;
+            PlaceWater();
         }
         else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.z < GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
         {
             isTurn = true;
+            PlaceWater();
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.left * 0.2f;
         }
         else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.x > GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
         {
             isTurn = true;
+            PlaceWater();
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.back * 0.2f;
         }
         else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.x < GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
         {
             isTurn = true;
+            PlaceWater();
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.forward * 0.2f;
         }
         else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.x < GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
         {
             isTurn = true;
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.back * 0.2f;
+            PlaceWater();
+
         }
         else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.x > GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
         {
             isTurn = true;
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.forward * 0.2f;
+            PlaceWater();
         }
-
+        Debug.Log(temppos);
         return temppos;
+    }
+
+    void PlaceWater()
+    {
+        if (pos.x > 0)
+        {
+            Instantiate(water, new Vector3(Convert.ToInt32(pos.x), 0.9f, Convert.ToInt32(pos.z)), Quaternion.identity);
+        }
     }
     Vector3 peekingPoint(Vector3 goingTo, Vector3 EndRail)
     {

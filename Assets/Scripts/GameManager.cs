@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
         //     Debug.Log("Failed to Initialize the Facebook SDK");
         // }
     }
-    
+
     private void OnHideUnity(bool isGameShown)
     {
         if (!isGameShown)
@@ -137,7 +137,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Win");
         levelnum++;
         LevelNum.text = "Level " + levelnum;
-        StartCoroutine(Timer(2));
+        StartCoroutine(Timer(4));
         Debug.ClearDeveloperConsole();
     }
 

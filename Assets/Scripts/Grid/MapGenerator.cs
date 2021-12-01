@@ -168,13 +168,14 @@ public class MapGenerator : MonoBehaviour
         path.Item1.RemoveAt(0);
         path.Item1.ForEach(p =>
         {
-            PlaceGridObj(Coin[Random.Range(0, Coin.Count - 1)], "Bonus", p.x, p.y, 1);
+            //PlaceGridObj(Coin[Random.Range(0, Coin.Count - 1)], "Bonus", p.x, p.y, 1);
         });
     }
 
     private void PlaceGridObj(GameObject obj, string name, int i, int b)
     {
-        GameObject temp = Instantiate(obj, new Vector3(i, 0, b), Quaternion.identity);
+        float num = 0f;
+        GameObject temp = Instantiate(obj, new Vector3(i, num, b), Quaternion.identity);
         temp.tag = name;
     }
     private void PlaceGridObj(GameObject obj, string name, int i, int b, int y)
