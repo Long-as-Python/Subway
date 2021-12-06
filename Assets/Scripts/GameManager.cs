@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int height;
     public CollideEvent CollideMesh;
     public UnityEvent OnWin;
+    public UnityEvent OnLoose;
     public UnityEvent OnStart;
     public UnityEvent StartTrain;
     public RailsPlacer railsPlacer;
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviour
     public GameObject train;
     public MeshDeformer meshDeformer;
     private int levelnum = 1;
+    private GameObject TrainSpawned;
 
     private void InitCallback()
     {
@@ -74,6 +76,8 @@ public class GameManager : MonoBehaviour
             CollideMesh = new CollideEvent();
         if (OnStart == null)
             OnStart = new UnityEvent();
+        if (OnLoose == null)
+            OnLoose = new UnityEvent();
         if (Instance == null)
             Instance = this;
         generator = GetComponent<MapGenerator>();
@@ -85,6 +89,7 @@ public class GameManager : MonoBehaviour
         StartNewGame();
         StartNewGame();
         OnWin.AddListener(Win);
+        OnLoose.AddListener(Loose);
         meshDeformer = FindObjectOfType<MeshDeformer>();
         //meshDeformer.Append();
     }
@@ -104,7 +109,7 @@ public class GameManager : MonoBehaviour
         OnStart.Invoke();
         generator.GenerateNewMaze(length, height, OnStartTrigger, OnGoalTrigger);
         Instantiate(drill, new Vector3(-0.4f, 1, 3), Quaternion.identity);
-        Instantiate(train, new Vector3(-1.4f, 1, 3), Quaternion.identity);
+        TrainSpawned= Instantiate(train, new Vector3(-1.4f, 1, 3), Quaternion.identity);
         goalReached = false;
     }
 
@@ -112,7 +117,7 @@ public class GameManager : MonoBehaviour
     {
         generator.GenerateNewMaze(length, height);
         Instantiate(drill, new Vector3(-0.4f, 1, 3), Quaternion.identity);
-        Instantiate(train, new Vector3(-1.4f, 1, 3), Quaternion.identity);
+        TrainSpawned = Instantiate(train, new Vector3(-1.4f, 1, 3), Quaternion.identity);
         goalReached = false;
     }
 
@@ -139,6 +144,14 @@ public class GameManager : MonoBehaviour
         LevelNum.text = "Level " + levelnum;
         StartCoroutine(Timer(4));
         Debug.ClearDeveloperConsole();
+    }
+
+    public void Loose()
+    {
+        Debug.Log("Loose");
+        StartCoroutine(Timer(4));
+        Debug.ClearDeveloperConsole();
+        TrainSpawned.SetActive(false);
     }
 
     public void Win(int time)

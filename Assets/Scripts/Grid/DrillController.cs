@@ -8,10 +8,11 @@ public class DrillController : MonoBehaviour
 {
     public float speed = 2;
     private Vector3 pos;
-    public DrillController Instance { set; get; }
+    public static DrillController Instance { set; get; }
     public List<GameObject> RailPoints;
     public GameObject ForwardRail;
     public GameObject TurnRail;
+    public Vector3 Block;
     //public MeshDeformer meshDeformer;
 
     private void Start()

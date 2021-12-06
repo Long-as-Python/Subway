@@ -12,6 +12,7 @@ public class RailsPlacer : MonoBehaviour
     public PlacedRail endRail;
     [SerializeField] private GameObject Rails;
     [SerializeField] private GameObject poinMarker;
+
     void Awake()
     {
         placedRails = new List<PlacedRail>();
@@ -54,7 +55,7 @@ public class RailsPlacer : MonoBehaviour
 
     private void CheckPlacament(GameObject temp, RaycastHit hit)
     {
-        if (temp.tag != "Rail" && temp.tag != "Generated Block" && temp.tag != "Wall Block" && temp.tag != "Bonus" && temp.tag != "Drill" && temp.tag != "train")
+        if (temp.tag != "Generated Block" && temp.tag != "Wall Block" && temp.tag != "Bonus" && temp.tag != "Drill" && temp.tag != "train")
         {
             var finalPosition = grid.GetNearestPointOnGrid(hit.point);
             if (finalPosition.x == temp.transform.position.x && finalPosition.z == temp.transform.position.z)
@@ -69,6 +70,7 @@ public class RailsPlacer : MonoBehaviour
                     start.height = Mathf.RoundToInt(finalPosition.x) - 0.4f;
                     start.width = Mathf.RoundToInt(finalPosition.z);
                     PlaceRailNear(finalPosition, temp, start);
+
                 }
                 else if (Mathf.RoundToInt(finalPosition.z) == placedRails[placedRails.Count - 1].ClickZ + 1 && Mathf.RoundToInt(finalPosition.x) == placedRails[placedRails.Count - 1].ClickX)
                 {
@@ -126,12 +128,25 @@ public class RailsPlacer : MonoBehaviour
 
     private void PlaceRailNear(Vector3 pos, GameObject temp, PlacedRail start)
     {
-        GameObject point = Instantiate(poinMarker, pos, Quaternion.identity);
-        point.tag = "PointMarker";
-        start.PointMarker = point;
-        placedRails.Add(start);
-        temp.tag = "Rail";
-        Debug.Log("Placed Rails");
+        if (placedRails.Count > 1 && placedRails[placedRails.Count - 2].ClickX == start.ClickX && placedRails[placedRails.Count - 2].ClickZ == start.ClickZ)
+        {
+
+        }
+        else
+        {
+            GameObject point = Instantiate(poinMarker, pos, Quaternion.identity);
+            point.tag = "PointMarker";
+            start.PointMarker = point;
+            placedRails.Add(start);
+            temp.tag = "Rail";
+            Debug.Log("Placed Rails");
+            //if (DrillController.Instance.Block == Vector3.zero && placedRails[placedRails.Count - 2].ClickX != start.ClickX && placedRails[placedRails.Count - 2].ClickZ != start.ClickZ)
+            //{
+            if (DrillController.Instance.Block == Vector3.zero)
+                DrillController.Instance.Block = pos;
+            //}
+        }
+
     }
 
     public class PlacedRail

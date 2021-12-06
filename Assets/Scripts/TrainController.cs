@@ -54,7 +54,14 @@ public class TrainController : MonoBehaviour
                 temp = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, transform.position.y, GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
                 Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1, GameManager.Instance.railsPlacer.endRail.ClickZ);
                 pos = goingTo;
-                point = peekingPoint(goingTo, new Vector3(GameManager.Instance.railsPlacer.endRail.height, 1, GameManager.Instance.railsPlacer.endRail.width));
+                if (DrillController.Instance.Block != new Vector3(Mathf.RoundToInt(goingTo.x), 1, Mathf.RoundToInt(goingTo.z)))
+                {
+                    point = peekingPoint(goingTo, new Vector3(GameManager.Instance.railsPlacer.endRail.height, 1, GameManager.Instance.railsPlacer.endRail.width));
+                }
+                else if (DrillController.Instance.Block != Vector3.zero)
+                {
+                    GameManager.Instance.OnWin.Invoke();
+                }
                 turnCounter = 0.0f;
                 count = 0;
                 StartCoroutine(Delay());
@@ -70,7 +77,15 @@ public class TrainController : MonoBehaviour
                 count++;
                 Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].height, 1, GameManager.Instance.railsPlacer.placedRails[count].width);
                 pos = goingTo;
-                point = peekingPoint(goingTo);
+                if (DrillController.Instance.Block != new Vector3(Mathf.RoundToInt(goingTo.x),1, Mathf.RoundToInt(goingTo.z)))
+                {
+                    point = peekingPoint(goingTo);
+                    Debug.Log("Debugging" + new Vector3(Mathf.RoundToInt(goingTo.x), 1, Mathf.RoundToInt(goingTo.z)));
+                }
+                else if (DrillController.Instance.Block != Vector3.zero)
+                {
+                    GameManager.Instance.OnLoose.Invoke();
+                }
                 turnCounter = 0.0f;
                 // if (LookCoroutine != null)
                 //     StopCoroutine(LookCoroutine);
