@@ -51,7 +51,7 @@ public class MazeDataGenerator
 
     public (List<Vector2Int>, bool) GetPath(int[,] maze, Vector2Int curr, Vector2Int skip, Vector2Int finish, List<Vector2Int> currPath)
     {
-        Debug.Log($"finish: {finish}, curr: {curr}");
+        //Debug.Log($"finish: {finish}, curr: {curr}");
 
         if (NearFinish(curr, finish))
         {

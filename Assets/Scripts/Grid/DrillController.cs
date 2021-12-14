@@ -13,6 +13,8 @@ public class DrillController : MonoBehaviour
     public GameObject ForwardRail;
     public GameObject TurnRail;
     public Vector3 Block;
+
+    private int spawnedCounter = 0;
     //public MeshDeformer meshDeformer;
 
     private void Start()
@@ -25,7 +27,8 @@ public class DrillController : MonoBehaviour
         point = transform.position;
         PoisitionBeforeTurn = transform.position;
         temp = new Vector3(transform.position.x, 1, transform.position.z);
-        Vector3 look = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, 1, GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
+        Vector3 look = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, 1,
+            GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
         transform.LookAt(look);
     }
 
@@ -59,21 +62,29 @@ public class DrillController : MonoBehaviour
             else
                 fingerUp = false;
         }
+
         if (fingerUp || Input.GetKey(KeyCode.P))
         {
             if (Vector3.Distance(transform.position, pos) < 0.001f && !stop)
             {
-                if (GameManager.Instance.railsPlacer.placedRails[count].PointMarker != null)
-                    Destroy(GameManager.Instance.railsPlacer.placedRails[count].PointMarker);
-                if (GameManager.Instance.railsPlacer.placedRails[count].ClickX == GameManager.Instance.railsPlacer.endRail.height - 1 && GameManager.Instance.railsPlacer.placedRails[count].ClickZ == GameManager.Instance.railsPlacer.endRail.width)
+                if (GameManager.Instance.railsPlacer.placedRails[count].pointMarker != null)
+                    Destroy(GameManager.Instance.railsPlacer.placedRails[count].pointMarker);
+                if (GameManager.Instance.railsPlacer.placedRails[count].ClickX ==
+                    GameManager.Instance.railsPlacer.endRail.height - 1 &&
+                    GameManager.Instance.railsPlacer.placedRails[count].ClickZ ==
+                    GameManager.Instance.railsPlacer.endRail.width)
                 {
                     StartCoroutine(ToFinalPos());
                     PoisitionBeforeTurn = transform.position;
-                    temp = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, transform.position.y, GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
-                    Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1, GameManager.Instance.railsPlacer.endRail.ClickZ);
+                    temp = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, transform.position.y,
+                        GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
+                    Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1,
+                        GameManager.Instance.railsPlacer.endRail.ClickZ);
                     Debug.Log(goingTo);
                     pos = goingTo;
-                    point = peekingPoint(goingTo, new Vector3(GameManager.Instance.railsPlacer.endRail.height, 1, GameManager.Instance.railsPlacer.endRail.width));
+                    point = peekingPoint(goingTo,
+                        new Vector3(GameManager.Instance.railsPlacer.endRail.height, 1,
+                            GameManager.Instance.railsPlacer.endRail.width));
                     turnCounter = 0.0f;
                     GameManager.Instance.StartTrain.Invoke();
                     stop = true;
@@ -82,9 +93,11 @@ public class DrillController : MonoBehaviour
                 {
                     railPlacedCheck = false;
                     PoisitionBeforeTurn = transform.position;
-                    temp = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, transform.position.y, GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
+                    temp = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, transform.position.y,
+                        GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
                     count++;
-                    Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].height, 1, GameManager.Instance.railsPlacer.placedRails[count].width);
+                    Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].height, 1,
+                        GameManager.Instance.railsPlacer.placedRails[count].width);
                     pos = goingTo;
                     point = peekingPoint(goingTo);
                     turnCounter = 0.0f;
@@ -95,9 +108,12 @@ public class DrillController : MonoBehaviour
             {
                 PlaceRail(pos, temp + (pos - temp) * 0.6f, PoisitionBeforeTurn + (temp - PoisitionBeforeTurn) * 0.4f);
                 turnCounter += 2.0f * Time.deltaTime;
-                transform.position = GetPointByLerp(PoisitionBeforeTurn, PoisitionBeforeTurn + (temp - PoisitionBeforeTurn) * 0.4f, temp + (pos - temp) * 0.6f, pos, turnCounter);
-                transform.rotation = Quaternion.LookRotation(GetFirstDerivate(PoisitionBeforeTurn, PoisitionBeforeTurn + (temp - PoisitionBeforeTurn) * 0.4f, temp + (pos - temp) * 0.6f, pos, turnCounter));
-
+                transform.position = GetPointByLerp(PoisitionBeforeTurn,
+                    PoisitionBeforeTurn + (temp - PoisitionBeforeTurn) * 0.4f, temp + (pos - temp) * 0.6f, pos,
+                    turnCounter);
+                transform.rotation = Quaternion.LookRotation(GetFirstDerivate(PoisitionBeforeTurn,
+                    PoisitionBeforeTurn + (temp - PoisitionBeforeTurn) * 0.4f, temp + (pos - temp) * 0.6f, pos,
+                    turnCounter));
             }
             else if (!isTurn)
             {
@@ -111,7 +127,6 @@ public class DrillController : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         Debug.Log("PlacedRailCurveCheck" + trans.localPosition + trans.gameObject.name);
-
     }
 
     IEnumerator ToFinalPos()
@@ -171,66 +186,110 @@ public class DrillController : MonoBehaviour
             3f * t * t * (p3 - p2);
     }
 
+    void CheckForPlacedBlock()
+    {
+        if (GameManager.Instance.railsPlacer.placedRails.Count > 2)
+            for (int i = 0; i < GameManager.Instance.railsPlacer.placedRails.Count; i++)
+            {
+                if (GameManager.Instance.railsPlacer.placedRails[i].ClickX == temp.x &&
+                    GameManager.Instance.railsPlacer.placedRails[i].ClickZ == temp.z &&
+                    GameManager.Instance.railsPlacer.placedRails[i].placedRail != null)
+                {
+                    GameManager.Instance.railsPlacer.placedRails[i].placedRail.SetActive(false);
+                    if (new Vector3(GameManager.Instance.railsPlacer.placedRails[i].ClickX, 1,
+                            GameManager.Instance.railsPlacer.placedRails[i].ClickZ) != new Vector3(0, 1, 3))
+                    {
+                        GameManager.Instance.railsPlacer.placedRails[i].isBlock = true;
+                        if (Block == Vector3.zero)
+                            Block = new Vector3(GameManager.Instance.railsPlacer.placedRails[i].ClickX, 1,
+                                GameManager.Instance.railsPlacer.placedRails[i].ClickZ);
+                    }
+                }
+            }
+    }
+
 
     Vector3 peekingPoint(Vector3 goingTo)
     {
         Vector3 temppos = transform.position;
-        if (GameManager.Instance.railsPlacer.placedRails[count - 1].height == goingTo.x || GameManager.Instance.railsPlacer.placedRails[count - 1].width == goingTo.z)
+        if (GameManager.Instance.railsPlacer.placedRails[count - 1].height == goingTo.x ||
+            GameManager.Instance.railsPlacer.placedRails[count - 1].width == goingTo.z)
         {
             transform.LookAt(goingTo);
             isTurn = false;
             temppos = pos;
+            CheckForPlacedBlock();
+
             GameObject tempRail = Instantiate(ForwardRail, new Vector3(temp.x, 0.525f, temp.z), Quaternion.identity);
             tempRail.tag = "Rail";
+            GameManager.Instance.railsPlacer.placedRails[spawnedCounter].placedRail = tempRail;
+            spawnedCounter++;
             if (count - 2 > 0)
-                tempRail.transform.LookAt(new Vector3(GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX, 0.525f, GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ));
+                tempRail.transform.LookAt(new Vector3(GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX,
+                    0.525f, GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ));
             else
                 tempRail.transform.LookAt(new Vector3(-2, 0.525f, 3));
             //meshDeformer.Append();
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.z > GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.z >
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
         {
             isTurn = true;
-            SpawnTurn(180 + 45);//+
+            SpawnTurn(180 + 45); //+
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.left * 0.2f;
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.z < GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.z <
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
         {
             isTurn = true;
             SpawnTurn(45);
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.right * 0.2f;
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.z > GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.z >
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
         {
             isTurn = true;
             SpawnTurn(315);
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.right * 0.2f;
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.z < GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.z <
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
         {
             SpawnTurn(90 + 45);
             isTurn = true;
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.left * 0.2f;
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.x > GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.x >
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
         {
-            SpawnTurn(45);//
+            SpawnTurn(45); //
             isTurn = true;
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.back * 0.2f;
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.x < GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.x <
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
         {
             SpawnTurn(225);
             isTurn = true;
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.forward * 0.2f;
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.x < GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.x <
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
         {
             SpawnTurn(135);
             isTurn = true;
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.back * 0.2f;
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.x > GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.x >
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
         {
             SpawnTurn(315);
             isTurn = true;
@@ -244,64 +303,100 @@ public class DrillController : MonoBehaviour
     {
         Debug.Log("End Rail placed on");
         Vector3 temppos = transform.position;
-        if (GameManager.Instance.railsPlacer.placedRails[count - 1].ClickX == goingTo.x || GameManager.Instance.railsPlacer.placedRails[count - 1].ClickZ == goingTo.z)
+        if (GameManager.Instance.railsPlacer.placedRails[count - 1].ClickX == goingTo.x ||
+            GameManager.Instance.railsPlacer.placedRails[count - 1].ClickZ == goingTo.z)
         {
             transform.LookAt(goingTo);
             isTurn = false;
             temppos = pos;
             GameObject tempRail = Instantiate(ForwardRail, new Vector3(temp.x, 0.525f, temp.z), Quaternion.identity);
+            GameManager.Instance.railsPlacer.placedRails[spawnedCounter].placedRail = tempRail;
+            spawnedCounter++;
             tempRail.tag = "Rail";
             if (count - 2 > 0)
-                tempRail.transform.LookAt(new Vector3(GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX, 0.525f, GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ));
+                tempRail.transform.LookAt(new Vector3(GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX,
+                    0.525f, GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ));
             else
                 tempRail.transform.LookAt(new Vector3(-2, 0.525f, 3));
             //meshDeformer.Append();
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.z > GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.z >
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
         {
             isTurn = true;
-            SpawnTurn(180 + 45, new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1, GameManager.Instance.railsPlacer.endRail.ClickZ));//+
+            SpawnTurn(180 + 45,
+                new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1,
+                    GameManager.Instance.railsPlacer.endRail.ClickZ)); //+
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.left * 0.2f;
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.z < GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.z <
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
         {
             isTurn = true;
-            SpawnTurn(45, new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1, GameManager.Instance.railsPlacer.endRail.ClickZ));
+            SpawnTurn(45,
+                new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1,
+                    GameManager.Instance.railsPlacer.endRail.ClickZ));
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.right * 0.2f;
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.z > GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.z >
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
         {
             isTurn = true;
-            SpawnTurn(315, new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1, GameManager.Instance.railsPlacer.endRail.ClickZ));
+            SpawnTurn(315,
+                new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1,
+                    GameManager.Instance.railsPlacer.endRail.ClickZ));
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.right * 0.2f;
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.z < GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.z <
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ)
         {
-            SpawnTurn(90 + 45, new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1, GameManager.Instance.railsPlacer.endRail.ClickZ));
+            SpawnTurn(90 + 45,
+                new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1,
+                    GameManager.Instance.railsPlacer.endRail.ClickZ));
             isTurn = true;
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.left * 0.2f;
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.x > GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.x >
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
         {
-            SpawnTurn(45, new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1, GameManager.Instance.railsPlacer.endRail.ClickZ));//
+            SpawnTurn(45,
+                new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1,
+                    GameManager.Instance.railsPlacer.endRail.ClickZ)); //
             isTurn = true;
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.back * 0.2f;
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.x < GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.x <
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
         {
-            SpawnTurn(225, new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1, GameManager.Instance.railsPlacer.endRail.ClickZ));
+            SpawnTurn(225,
+                new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1,
+                    GameManager.Instance.railsPlacer.endRail.ClickZ));
             isTurn = true;
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.forward * 0.2f;
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.x < GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX > goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ < goingTo.z && transform.position.x <
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
         {
-            SpawnTurn(135, new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1, GameManager.Instance.railsPlacer.endRail.ClickZ));
+            SpawnTurn(135,
+                new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1,
+                    GameManager.Instance.railsPlacer.endRail.ClickZ));
             isTurn = true;
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.back * 0.2f;
         }
-        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x && GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.x > GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
+        else if (GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX < goingTo.x &&
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ > goingTo.z && transform.position.x >
+                 GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX)
         {
-            SpawnTurn(315, new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1, GameManager.Instance.railsPlacer.endRail.ClickZ));
+            SpawnTurn(315,
+                new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1,
+                    GameManager.Instance.railsPlacer.endRail.ClickZ));
             isTurn = true;
             temppos = transform.position + (goingTo - transform.position) / 2 + Vector3.forward * 0.2f;
         }
@@ -311,13 +406,21 @@ public class DrillController : MonoBehaviour
 
     void SpawnTurn(float angle)
     {
-        GameObject tempRail = Instantiate(TurnRail, new Vector3(temp.x, 0.536f, temp.z), Quaternion.AngleAxis(angle, Vector3.up));
+        CheckForPlacedBlock();
+        GameObject tempRail = Instantiate(TurnRail, new Vector3(temp.x, 0.536f, temp.z),
+            Quaternion.AngleAxis(angle, Vector3.up));
+        GameManager.Instance.railsPlacer.placedRails[spawnedCounter].placedRail = tempRail;
+        spawnedCounter++;
         tempRail.tag = "Rail";
     }
 
     void SpawnTurn(float angle, Vector3 positionEnd)
     {
-        GameObject tempRail = Instantiate(TurnRail, new Vector3(positionEnd.x - 1, 0.536f, positionEnd.z), Quaternion.AngleAxis(angle, Vector3.up));
+        CheckForPlacedBlock();
+        GameObject tempRail = Instantiate(TurnRail, new Vector3(positionEnd.x - 1, 0.536f, positionEnd.z),
+            Quaternion.AngleAxis(angle, Vector3.up));
+        GameManager.Instance.railsPlacer.placedRails[spawnedCounter].placedRail = tempRail;
+        spawnedCounter++;
         tempRail.tag = "Rail";
     }
 

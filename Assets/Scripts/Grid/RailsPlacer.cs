@@ -4,9 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+
 public class RailsPlacer : MonoBehaviour
 {
-    private Grid grid;
+    public Grid grid;
     public List<PlacedRail> placedRails;
     public List<RailToPlace> railToPlace;
     public PlacedRail endRail;
@@ -23,7 +24,6 @@ public class RailsPlacer : MonoBehaviour
     void Start()
     {
         //GameManager.Instance.OnWin.AddListener(ClearRails);
-
     }
 
     // void ClearRails()
@@ -50,6 +50,7 @@ public class RailsPlacer : MonoBehaviour
                 CheckPlacament(temp, hit);
             }
         }
+
         //}
     }
 
@@ -60,8 +61,10 @@ public class RailsPlacer : MonoBehaviour
             var finalPosition = grid.GetNearestPointOnGrid(hit.point);
             if (finalPosition.x == temp.transform.position.x && finalPosition.z == temp.transform.position.z)
             {
+                
                 //Debug.Log(grid.GetNearestPointOnGrid(hit.point));
-                if (Mathf.RoundToInt(finalPosition.x) == placedRails[placedRails.Count - 1].ClickX + 1 && Mathf.RoundToInt(finalPosition.z) == placedRails[placedRails.Count - 1].ClickZ)
+                if (Mathf.RoundToInt(finalPosition.x) == placedRails[placedRails.Count - 1].ClickX + 1 &&
+                    Mathf.RoundToInt(finalPosition.z) == placedRails[placedRails.Count - 1].ClickZ)
                 {
                     //Destroy(temp);
                     PlacedRail start = new PlacedRail();
@@ -70,9 +73,9 @@ public class RailsPlacer : MonoBehaviour
                     start.height = Mathf.RoundToInt(finalPosition.x) - 0.4f;
                     start.width = Mathf.RoundToInt(finalPosition.z);
                     PlaceRailNear(finalPosition, temp, start);
-
                 }
-                else if (Mathf.RoundToInt(finalPosition.z) == placedRails[placedRails.Count - 1].ClickZ + 1 && Mathf.RoundToInt(finalPosition.x) == placedRails[placedRails.Count - 1].ClickX)
+                else if (Mathf.RoundToInt(finalPosition.z) == placedRails[placedRails.Count - 1].ClickZ + 1 &&
+                         Mathf.RoundToInt(finalPosition.x) == placedRails[placedRails.Count - 1].ClickX)
                 {
                     //Destroy(temp);
                     PlacedRail start = new PlacedRail();
@@ -82,7 +85,8 @@ public class RailsPlacer : MonoBehaviour
                     start.width = Mathf.RoundToInt(finalPosition.z) - 0.4f;
                     PlaceRailNear(finalPosition, temp, start);
                 }
-                else if (Mathf.RoundToInt(finalPosition.x) == placedRails[placedRails.Count - 1].ClickX - 1 && Mathf.RoundToInt(finalPosition.z) == placedRails[placedRails.Count - 1].ClickZ)
+                else if (Mathf.RoundToInt(finalPosition.x) == placedRails[placedRails.Count - 1].ClickX - 1 &&
+                         Mathf.RoundToInt(finalPosition.z) == placedRails[placedRails.Count - 1].ClickZ)
                 {
                     //Destroy(temp);
                     PlacedRail start = new PlacedRail();
@@ -92,7 +96,8 @@ public class RailsPlacer : MonoBehaviour
                     start.width = Mathf.RoundToInt(finalPosition.z);
                     PlaceRailNear(finalPosition, temp, start);
                 }
-                else if (Mathf.RoundToInt(finalPosition.z) == placedRails[placedRails.Count - 1].ClickZ - 1 && Mathf.RoundToInt(finalPosition.x) == placedRails[placedRails.Count - 1].ClickX)
+                else if (Mathf.RoundToInt(finalPosition.z) == placedRails[placedRails.Count - 1].ClickZ - 1 &&
+                         Mathf.RoundToInt(finalPosition.x) == placedRails[placedRails.Count - 1].ClickX)
                 {
                     //Destroy(temp);
                     PlacedRail start = new PlacedRail();
@@ -123,39 +128,42 @@ public class RailsPlacer : MonoBehaviour
         {
             PlaceRailNear(element.pos, element.temp, element.start);
         }
+
         railToPlace.Clear();
     }
 
     private void PlaceRailNear(Vector3 pos, GameObject temp, PlacedRail start)
     {
-        if (placedRails.Count > 1 && placedRails[placedRails.Count - 2].ClickX == start.ClickX && placedRails[placedRails.Count - 2].ClickZ == start.ClickZ)
+        if (placedRails.Count > 1 && placedRails[placedRails.Count - 2].ClickX == start.ClickX &&
+            placedRails[placedRails.Count - 2].ClickZ == start.ClickZ)
         {
-
         }
         else
         {
             GameObject point = Instantiate(poinMarker, pos, Quaternion.identity);
             point.tag = "PointMarker";
-            start.PointMarker = point;
+            start.pointMarker = point;
             placedRails.Add(start);
             temp.tag = "Rail";
             Debug.Log("Placed Rails");
             //if (DrillController.Instance.Block == Vector3.zero && placedRails[placedRails.Count - 2].ClickX != start.ClickX && placedRails[placedRails.Count - 2].ClickZ != start.ClickZ)
             //{
-            if (DrillController.Instance.Block == Vector3.zero)
-                DrillController.Instance.Block = pos;
+            ////if (DrillController.Instance.Block == Vector3.zero)
+            ////    DrillController.Instance.Block = pos;
             //}
         }
-
     }
 
+    [System.Serializable]
     public class PlacedRail
     {
         public float height;
         public float width;
         public float ClickX;
         public float ClickZ;
-        public GameObject PointMarker;
+        public GameObject pointMarker;
+        public GameObject placedRail;
+        public bool isBlock = false;
     }
 
     public class RailToPlace
