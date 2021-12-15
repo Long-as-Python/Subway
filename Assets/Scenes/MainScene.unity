@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44117352, g: 0.489949, b: 0.57001656, a: 1}
+  m_IndirectSpecularColor: {r: 0.44117343, g: 0.48994863, b: 0.5700159, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -26339,6 +26339,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61eb18a6954ad414a884275f636f5cae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grid: {fileID: 0}
+  placedRails: []
+  endRail:
+    height: 0
+    width: 0
+    ClickX: 0
+    ClickZ: 0
+    pointMarker: {fileID: 0}
+    placedRail: {fileID: 0}
+    isBlock: 0
   Rails: {fileID: 9210556091111095668, guid: 2d7d1620845c44341ac11ca703bfa4df, type: 3}
   poinMarker: {fileID: 4295329982112462112, guid: 084ece29e28fa4240973be1252d6da65, type: 3}
 --- !u!114 &2123108331

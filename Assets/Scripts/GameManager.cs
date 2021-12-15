@@ -13,7 +13,7 @@ public class CollideEvent : UnityEvent<Vector3, float> { }
 public class GameManager : MonoBehaviour
 {
     public TextMeshProUGUI LevelNum;
-    MapGenerator generator;
+    public MapGenerator generator;
     public static GameManager Instance { private set; get; }
     private bool goalReached;
     [SerializeField] private int length;

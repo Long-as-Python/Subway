@@ -16,7 +16,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private GameObject EndRail;
     [SerializeField] private List<GameObject> Coin;
     public RailsPlacer railsPlacer;
-
+    public List<RailsPlacer.PlacedRail> wallsPlaced;
     public int[,] data
     {
         get; private set;
@@ -152,10 +152,18 @@ public class MapGenerator : MonoBehaviour
                 else if (i == 0 || b == 0 || i == rows - 1 || b == cols - 1)
                 {
                     PlaceGridObj(Wall, "Wall Block", i, b, rows, cols);
+                    //
+                    //
+                   
                 }
                 else if (data[i, b] == 1)
                 {
                     PlaceGridObj(block, "Generated Block", i, b);
+                    var temp = new RailsPlacer.PlacedRail();
+                    temp.isBlock = true;
+                    temp.ClickX = i;
+                    temp.ClickZ = b;
+                    wallsPlaced.Add(temp);
                 }
                 else if (data[i, b] == 0)
                 {
@@ -203,6 +211,7 @@ public class MapGenerator : MonoBehaviour
 
     public void DisposeOldMaze()
     {
+        wallsPlaced.Clear();
         GameObject[] objects = GameObject.FindGameObjectsWithTag("Generated Block");
         foreach (GameObject go in objects)
         {

@@ -95,6 +95,8 @@ public class DrillController : MonoBehaviour
                     PoisitionBeforeTurn = transform.position;
                     temp = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, transform.position.y,
                         GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
+
+                    CheckForWalls(temp);
                     count++;
                     Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].height, 1,
                         GameManager.Instance.railsPlacer.placedRails[count].width);
@@ -120,6 +122,27 @@ public class DrillController : MonoBehaviour
                 float step = speed * Time.deltaTime;
                 transform.position = Vector3.MoveTowards(transform.position, pos, step);
             }
+        }
+    }
+
+    void CheckForWalls(Vector3 pointTo)
+    {
+        int count = 0;
+        for (int i = 0; i < GameManager.Instance.generator.wallsPlaced.Count; i++)
+        {
+            if (pointTo.x + 1 == GameManager.Instance.generator.wallsPlaced[i].ClickX ||
+                pointTo.x + 1 == GameManager.Instance.generator.wallsPlaced[i].ClickX ||
+                pointTo.z + 1 == GameManager.Instance.generator.wallsPlaced[i].ClickZ ||
+                pointTo.z - 1 == GameManager.Instance.generator.wallsPlaced[i].ClickZ)
+            {
+                count++;
+            }
+        }
+
+        if (count > 3)
+        {
+            Debug.Log("Count " + count);
+            GameManager.Instance.OnLoose.Invoke();
         }
     }
 
