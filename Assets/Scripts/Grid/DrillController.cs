@@ -96,7 +96,9 @@ public class DrillController : MonoBehaviour
                     temp = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, transform.position.y,
                         GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
 
-                    CheckForWalls(temp);
+                    CheckForWalls(new Vector3(GameManager.Instance.railsPlacer.placedRails[count + 1].ClickX,
+                        transform.position.y,
+                        GameManager.Instance.railsPlacer.placedRails[count + 1].ClickZ));
                     count++;
                     Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].height, 1,
                         GameManager.Instance.railsPlacer.placedRails[count].width);
@@ -127,21 +129,36 @@ public class DrillController : MonoBehaviour
 
     void CheckForWalls(Vector3 pointTo)
     {
-        int count = 0;
+        int tempCounter = 0;
         for (int i = 0; i < GameManager.Instance.generator.wallsPlaced.Count; i++)
         {
-            if (pointTo.x + 1 == GameManager.Instance.generator.wallsPlaced[i].ClickX ||
-                pointTo.x + 1 == GameManager.Instance.generator.wallsPlaced[i].ClickX ||
-                pointTo.z + 1 == GameManager.Instance.generator.wallsPlaced[i].ClickZ ||
-                pointTo.z - 1 == GameManager.Instance.generator.wallsPlaced[i].ClickZ)
+            if (pointTo.x + 1 == GameManager.Instance.generator.wallsPlaced[i].ClickX &&
+                pointTo.z == GameManager.Instance.generator.wallsPlaced[i].ClickZ)
             {
-                count++;
+                tempCounter++;
+            }
+            else if (pointTo.x - 1 == GameManager.Instance.generator.wallsPlaced[i].ClickX &&
+                     pointTo.z == GameManager.Instance.generator.wallsPlaced[i].ClickZ)
+            {
+                tempCounter++;
+            }
+            else if (pointTo.x == GameManager.Instance.generator.wallsPlaced[i].ClickX &&
+                     pointTo.z - 1 == GameManager.Instance.generator.wallsPlaced[i].ClickZ)
+            {
+                tempCounter++;
+            }
+            else if (pointTo.x == GameManager.Instance.generator.wallsPlaced[i].ClickX &&
+                     pointTo.z + 1 == GameManager.Instance.generator.wallsPlaced[i].ClickZ)
+            {
+                tempCounter++;
             }
         }
 
-        if (count > 3)
+        Debug.Log("Count " + tempCounter + " temp " + pointTo + temp);
+
+        if (tempCounter >= 3)
         {
-            Debug.Log("Count " + count);
+            Debug.Log("Count " + count + "temp " + pointTo);
             GameManager.Instance.OnLoose.Invoke();
         }
     }
@@ -220,7 +237,7 @@ public class DrillController : MonoBehaviour
                 {
                     GameManager.Instance.railsPlacer.placedRails[i].placedRail.SetActive(false);
                     if (new Vector3(GameManager.Instance.railsPlacer.placedRails[i].ClickX, 1,
-                            GameManager.Instance.railsPlacer.placedRails[i].ClickZ) != new Vector3(0, 1, 3))
+                        GameManager.Instance.railsPlacer.placedRails[i].ClickZ) != new Vector3(0, 1, 3))
                     {
                         GameManager.Instance.railsPlacer.placedRails[i].isBlock = true;
                         if (Block == Vector3.zero)

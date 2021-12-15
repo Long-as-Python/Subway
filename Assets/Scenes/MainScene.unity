@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44117343, g: 0.48994863, b: 0.5700159, a: 1}
+  m_IndirectSpecularColor: {r: 0.44117352, g: 0.489949, b: 0.57001656, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10219,6 +10219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LevelNum: {fileID: 1650827393}
+  generator: {fileID: 0}
   length: 7
   height: 7
   CollideMesh:
@@ -10589,6 +10590,7 @@ MonoBehaviour:
   EndRail: {fileID: 8590069913796269854, guid: b3d9a4650a03f6640844ab2b52ed6406, type: 3}
   Coin: []
   railsPlacer: {fileID: 0}
+  wallsPlaced: []
 --- !u!1 &674158630
 GameObject:
   m_ObjectHideFlags: 0
@@ -24002,7 +24004,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1854067128}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.29, y: 0.75, z: 3}
+  m_LocalPosition: {x: -2.56, y: 0.75, z: 3}
   m_LocalScale: {x: 4.036725, y: 1, z: 1.96}
   m_Children: []
   m_Father: {fileID: 1101947524}
