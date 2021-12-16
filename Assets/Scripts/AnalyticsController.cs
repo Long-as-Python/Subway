@@ -16,7 +16,7 @@ public class AnalyticsController : MonoBehaviour
 
         if (analyticsController == null)
         {
-            level_count = PlayerPrefs.GetInt("level_count", 0);
+            //level_count = PlayerPrefs.GetInt("level_count", 0);
             analyticsController = this;
             DontDestroyOnLoad(this.gameObject);
         }
