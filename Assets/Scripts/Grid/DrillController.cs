@@ -7,7 +7,9 @@ using Battlehub.MeshDeformer2;
 public class DrillController : MonoBehaviour
 {
     public float speed = 2;
-    private Vector3 pos;
+    public Vector3 pos;
+    public Vector3 temp;
+
     public static DrillController Instance { set; get; }
     public List<GameObject> RailPoints;
     public GameObject ForwardRail;
@@ -39,17 +41,16 @@ public class DrillController : MonoBehaviour
         Debug.Log("Moving Tovards dest");
     }
 
-    int count;
+    public int count;
     float turnCounter = 0.0f;
-    bool isTurn = false;
+    public bool isTurn = false;
     Vector3 point;
-    bool stop = false;
+    public bool stop = false;
     private Coroutine LookCoroutine;
-    Vector3 temp;
     bool railPlacedCheck = false;
     Vector3 PoisitionBeforeTurn;
-    bool fingerUp = false;
-
+    public bool fingerUp = false;
+    
     void Update()
     {
         if (Input.touchCount == 1)
@@ -63,6 +64,10 @@ public class DrillController : MonoBehaviour
                 fingerUp = false;
         }
 
+        // if (Vector3.Distance(transform.position, pos) < 0.001f && !stop)
+        // {
+        //     Debug.Log("Check " + "going to " + pos + " now " + transform.position + " count " + count);
+        // }
         if (fingerUp || Input.GetKey(KeyCode.P))
         {
             if (Vector3.Distance(transform.position, pos) < 0.001f && !stop)
@@ -78,12 +83,12 @@ public class DrillController : MonoBehaviour
                     PoisitionBeforeTurn = transform.position;
                     temp = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, transform.position.y,
                         GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
-                    Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, 1,
+                    Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.endRail.ClickX, transform.position.y,
                         GameManager.Instance.railsPlacer.endRail.ClickZ);
                     Debug.Log(goingTo);
                     pos = goingTo;
                     point = peekingPoint(goingTo,
-                        new Vector3(GameManager.Instance.railsPlacer.endRail.height, 1,
+                        new Vector3(GameManager.Instance.railsPlacer.endRail.height, transform.position.y,
                             GameManager.Instance.railsPlacer.endRail.width));
                     turnCounter = 0.0f;
                     GameManager.Instance.StartTrain.Invoke();
@@ -100,10 +105,12 @@ public class DrillController : MonoBehaviour
                         transform.position.y,
                         GameManager.Instance.railsPlacer.placedRails[count + 1].ClickZ));
                     count++;
-                    Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].height, 1,
+                    
+                    //Debug.Log("going to " + pos);
+                    
+                    pos = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].height, transform.position.y,
                         GameManager.Instance.railsPlacer.placedRails[count].width);
-                    pos = goingTo;
-                    point = peekingPoint(goingTo);
+                    point = peekingPoint(pos);
                     turnCounter = 0.0f;
                 }
             }
@@ -111,7 +118,8 @@ public class DrillController : MonoBehaviour
             if (turnCounter < 1.0f && isTurn)
             {
                 PlaceRail(pos, temp + (pos - temp) * 0.6f, PoisitionBeforeTurn + (temp - PoisitionBeforeTurn) * 0.4f);
-                turnCounter += 2.0f * Time.deltaTime;
+                
+                turnCounter += 3.0f * Time.deltaTime;
                 transform.position = GetPointByLerp(PoisitionBeforeTurn,
                     PoisitionBeforeTurn + (temp - PoisitionBeforeTurn) * 0.4f, temp + (pos - temp) * 0.6f, pos,
                     turnCounter);
@@ -154,11 +162,11 @@ public class DrillController : MonoBehaviour
             }
         }
 
-        Debug.Log("Count " + tempCounter + " temp " + pointTo + temp);
+        //Debug.Log("Count " + tempCounter + " temp " + pointTo + temp);
 
         if (tempCounter >= 3)
         {
-            Debug.Log("Count " + count + "temp " + pointTo);
+            //Debug.Log("Count " + count + "temp " + pointTo);
             GameManager.Instance.OnLoose.Invoke();
         }
     }
@@ -173,7 +181,7 @@ public class DrillController : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         isTurn = false;
-        Vector3 goingTo = new Vector3(transform.position.x + 3, 1, GameManager.Instance.railsPlacer.endRail.ClickZ);
+        Vector3 goingTo = new Vector3(transform.position.x + 3, transform.position.y, GameManager.Instance.railsPlacer.endRail.ClickZ);
         pos = goingTo;
         transform.LookAt(goingTo);
     }
@@ -255,7 +263,10 @@ public class DrillController : MonoBehaviour
         if (GameManager.Instance.railsPlacer.placedRails[count - 1].height == goingTo.x ||
             GameManager.Instance.railsPlacer.placedRails[count - 1].width == goingTo.z)
         {
-            transform.LookAt(goingTo);
+            Debug.Log("Stopped turn");
+            Vector3 look = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].ClickX, 1,
+                GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
+            transform.LookAt(look);
             isTurn = false;
             temppos = pos;
             CheckForPlacedBlock();
@@ -343,16 +354,16 @@ public class DrillController : MonoBehaviour
     {
         Debug.Log("End Rail placed on");
         Vector3 temppos = transform.position;
-        if (GameManager.Instance.railsPlacer.placedRails[count - 1].ClickX == goingTo.x ||
-            GameManager.Instance.railsPlacer.placedRails[count - 1].ClickZ == goingTo.z)
+        if (GameManager.Instance.railsPlacer.placedRails[count - 1].height == goingTo.x ||
+            GameManager.Instance.railsPlacer.placedRails[count - 1].width == goingTo.z)
         {
             transform.LookAt(goingTo);
             isTurn = false;
             temppos = pos;
             GameObject tempRail = Instantiate(ForwardRail, new Vector3(temp.x, 0.525f, temp.z), Quaternion.identity);
             GameManager.Instance.railsPlacer.placedRails[spawnedCounter].placedRail = tempRail;
-            spawnedCounter++;
             tempRail.tag = "Rail";
+            spawnedCounter++;
             if (count - 2 > 0)
                 tempRail.transform.LookAt(new Vector3(GameManager.Instance.railsPlacer.placedRails[count - 2].ClickX,
                     0.525f, GameManager.Instance.railsPlacer.placedRails[count - 2].ClickZ));
@@ -449,9 +460,9 @@ public class DrillController : MonoBehaviour
         CheckForPlacedBlock();
         GameObject tempRail = Instantiate(TurnRail, new Vector3(temp.x, 0.536f, temp.z),
             Quaternion.AngleAxis(angle, Vector3.up));
+        tempRail.tag = "Rail";
         GameManager.Instance.railsPlacer.placedRails[spawnedCounter].placedRail = tempRail;
         spawnedCounter++;
-        tempRail.tag = "Rail";
     }
 
     void SpawnTurn(float angle, Vector3 positionEnd)
@@ -459,9 +470,9 @@ public class DrillController : MonoBehaviour
         CheckForPlacedBlock();
         GameObject tempRail = Instantiate(TurnRail, new Vector3(positionEnd.x - 1, 0.536f, positionEnd.z),
             Quaternion.AngleAxis(angle, Vector3.up));
+        tempRail.tag = "Rail";
         GameManager.Instance.railsPlacer.placedRails[spawnedCounter].placedRail = tempRail;
         spawnedCounter++;
-        tempRail.tag = "Rail";
     }
 
     public void RestPos()

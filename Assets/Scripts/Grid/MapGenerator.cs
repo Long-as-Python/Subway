@@ -262,7 +262,7 @@ public class MapGenerator : MonoBehaviour
         {
             Destroy(go);
         }
-
+        Debug.ClearDeveloperConsole();
     }
 
     private void FindStartPosition()

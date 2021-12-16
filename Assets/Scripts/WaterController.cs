@@ -80,7 +80,6 @@ public class WaterController : MonoBehaviour
                     GameManager.Instance.railsPlacer.placedRails[count].ClickZ);
                 CheckForPlacedBlock();
                 count++;
-
                 Vector3 goingTo = new Vector3(GameManager.Instance.railsPlacer.placedRails[count].height, 1,
                     GameManager.Instance.railsPlacer.placedRails[count].width);
                 pos = goingTo;
@@ -119,7 +118,7 @@ public class WaterController : MonoBehaviour
 
     void CheckForPlacedBlock()
     {
-        Debug.Log("position " + pos);
+        //Debug.Log("position " + pos);
         var nextPos = new Vector3(GameManager.Instance.railsPlacer.placedRails[count + 1].ClickX, transform.position.y,
             GameManager.Instance.railsPlacer.placedRails[count + 1].ClickZ);
         for (int i = 0; i < GameManager.Instance.railsPlacer.placedRails.Count; i++)

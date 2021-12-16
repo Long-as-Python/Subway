@@ -160,9 +160,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
-  m_Height: 2.3602033
+  m_Height: 1.659406
   m_Direction: 2
-  m_Center: {x: -2.5594032e-15, y: 0.39, z: -0.6801019}
+  m_Center: {x: 0, y: 0.39000002, z: -0.32970303}
 --- !u!114 &2480437050359063916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,9 +176,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1
+  pos: {x: 0, y: 0, z: 0}
+  temp: {x: 0, y: 0, z: 0}
   RailPoints: []
   ForwardRail: {fileID: 1225252527046416103, guid: a61b6f1548387f14bb5a308143a2ffa4, type: 3}
   TurnRail: {fileID: 5928439184143481436, guid: 7c9adabdd25244443a72369525fbb677, type: 3}
+  Block: {x: 0, y: 0, z: 0}
+  count: 0
+  isTurn: 0
+  stop: 0
+  fingerUp: 0
 --- !u!1 &392699216993938399
 GameObject:
   m_ObjectHideFlags: 0
