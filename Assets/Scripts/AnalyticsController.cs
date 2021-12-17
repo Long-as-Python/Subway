@@ -1,18 +1,34 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Facebook.Unity;
+using GameAnalyticsSDK;
 using UnityEngine;
 
 public class AnalyticsController : MonoBehaviour
 {
     public static AnalyticsController analyticsController;
+
     Dictionary<string, object> event_parameters = new Dictionary<string, object>();
+
     //Dictionary<string, object> event_parameters;
     [HideInInspector] public int level_number = 1;
     [HideInInspector] public int level_count;
     [HideInInspector] public float time;
 
+
     private void Awake()
     {
+        if (!FB.IsInitialized)
+        {
+            // Initialize the Facebook SDK
+            FB.Init();
+        }
+        else
+        {
+            // Already initialized, signal an app activation App Event
+            FB.ActivateApp();
+        }
 
         if (analyticsController == null)
         {
@@ -24,8 +40,14 @@ public class AnalyticsController : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
         level_count++;
         start_analitics();
+    }
+
+    private void Start()
+    {
+        GameAnalytics.Initialize();
     }
 
     private void Common_parameters()
@@ -48,7 +70,7 @@ public class AnalyticsController : MonoBehaviour
     {
         event_parameters.Clear();
         Common_parameters();
-        event_parameters.Add("time", (int)time);
+        event_parameters.Add("time", (int) time);
         Event_analitics("level_finish");
 
         //Debug.Log(level_count + " / " + PlayerPrefs.GetInt("Level_analitics") + " / " + level_loop + " / " + result + " / " + time + " / " + progress);
@@ -56,7 +78,6 @@ public class AnalyticsController : MonoBehaviour
 
     private void Event_analitics(string start_finish)
     {
-        
     }
 
     public void ResetVar()
