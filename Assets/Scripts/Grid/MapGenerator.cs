@@ -17,37 +17,17 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private List<GameObject> Coin;
     public RailsPlacer railsPlacer;
     public List<RailsPlacer.PlacedRail> wallsPlaced;
-    public int[,] data
-    {
-        get; private set;
-    }
 
-    public float hallWidth
-    {
-        get; private set;
-    }
-    public float hallHeight
-    {
-        get; private set;
-    }
+    [SerializeField] public int[,] data { get; set; }
 
-    public int startRow
-    {
-        get; private set;
-    }
-    public int startCol
-    {
-        get; private set;
-    }
+    public float hallWidth { get; private set; }
+    public float hallHeight { get; private set; }
 
-    public int goalRow
-    {
-        get; private set;
-    }
-    public int goalCol
-    {
-        get; private set;
-    }
+    public int startRow { get; private set; }
+    public int startCol { get; private set; }
+
+    public int goalRow { get; private set; }
+    public int goalCol { get; private set; }
 
     private MazeDataGenerator dataGenerator;
 
@@ -65,16 +45,23 @@ public class MapGenerator : MonoBehaviour
         };
     }
 
-    public void GenerateNewMaze(int sizeRows, int sizeCols, TriggerEventHandler startCallback = null, TriggerEventHandler goalCallback = null)
+    public int counter = 0;
+
+    public void GenerateNewMaze(int sizeRows, int sizeCols, TriggerEventHandler startCallback = null,
+        TriggerEventHandler goalCallback = null)
     {
         if (sizeRows % 2 == 0 && sizeCols % 2 == 0)
         {
             Debug.LogWarning("Odd numbers work better for dungeon size.");
         }
+
         //Deleting old map
         DisposeOldMaze();
 
-        data = dataGenerator.FromDimensions(sizeRows, sizeCols);
+        data = dataGenerator.FromDimensions(sizeRows, sizeCols, counter);
+        
+
+        counter++;
         FindStartPosition();
         FindGoalPosition();
         //store values used to generate this mesh
@@ -89,6 +76,7 @@ public class MapGenerator : MonoBehaviour
         {
             Debug.LogWarning("Odd numbers work better for dungeon size.");
         }
+
         //Deleting old map
         DisposeOldMaze();
         FindStartPosition();
@@ -113,6 +101,7 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+
         bool isCoinPlaced = false;
         int a = Random.Range(1, cols - 2);
         Debug.Log(a);
@@ -139,6 +128,7 @@ public class MapGenerator : MonoBehaviour
                     {
                         data[rows - 2, a] = 0;
                     }
+
                     RailsPlacer.PlacedRail start = new RailsPlacer.PlacedRail();
                     start.height = rows - 1;
                     start.width = a;
@@ -154,7 +144,6 @@ public class MapGenerator : MonoBehaviour
                     PlaceGridObj(Wall, "Wall Block", i, b, rows, cols);
                     //
                     //
-                   
                 }
                 else if (data[i, b] == 1)
                 {
@@ -171,7 +160,93 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
-        var path = dataGenerator.GetPath(data, new Vector2Int(0, 3), new Vector2Int(0, 3), new Vector2Int((int)railsPlacer.endRail.ClickX, (int)railsPlacer.endRail.ClickZ), new List<Vector2Int> { });
+
+        var path = dataGenerator.GetPath(data, new Vector2Int(0, 3), new Vector2Int(0, 3),
+            new Vector2Int((int) railsPlacer.endRail.ClickX, (int) railsPlacer.endRail.ClickZ),
+            new List<Vector2Int> { });
+        path.Item1.RemoveAt(path.Item1.Count - 1);
+        path.Item1.RemoveAt(0);
+        path.Item1.ForEach(p =>
+        {
+            //PlaceGridObj(Coin[Random.Range(0, Coin.Count - 1)], "Bonus", p.x, p.y, 1);
+        });
+    }
+    
+    private void DisplayLevel(int rows, int cols, int counter)
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            for (int b = 0; b < cols; b++)
+            {
+                if (b == 1 || i == 1 || b == cols - 2 || i == rows - 2)
+                {
+                    data[i, b] = 0;
+                }
+            }
+        }
+
+        bool isCoinPlaced = false;
+        int a = Random.Range(1, cols - 2);
+        Debug.Log(a);
+        int CoinCoordsX = Random.Range(1, rows - 2);
+        int CoinCoordsZ = Random.Range(1, rows - 2);
+        bool check = false;
+        for (int i = 0; i < rows; i++)
+        {
+            for (int b = 0; b < cols; b++)
+            {
+                if (i == 0 && b == 3)
+                {
+                    PlaceGridObj(Rails, "Start Pos", i, b);
+                    RailsPlacer.PlacedRail start = new RailsPlacer.PlacedRail();
+                    start.height = i;
+                    start.width = b;
+                    start.ClickX = Mathf.RoundToInt(i);
+                    start.ClickZ = Mathf.RoundToInt(b);
+                    railsPlacer.placedRails.Add(start);
+                }
+                else if (!check)
+                {
+                    if (data[rows - 2, a] == 1)
+                    {
+                        data[rows - 2, a] = 0;
+                    }
+
+                    RailsPlacer.PlacedRail start = new RailsPlacer.PlacedRail();
+                    start.height = rows - 1;
+                    start.width = a;
+                    start.ClickX = rows - 1;
+                    start.ClickZ = a;
+                    railsPlacer.endRail = start;
+                    Debug.Log("FINISH ");
+                    check = true;
+                    PlaceGridObj(EndRail, "Finish Pos", rows - 1, a);
+                }
+                else if (i == 0 || b == 0 || i == rows - 1 || b == cols - 1)
+                {
+                    PlaceGridObj(Wall, "Wall Block", i, b, rows, cols);
+                    //
+                    //
+                }
+                else if (data[i, b] == 1)
+                {
+                    PlaceGridObj(block, "Generated Block", i, b);
+                    var temp = new RailsPlacer.PlacedRail();
+                    temp.isBlock = true;
+                    temp.ClickX = i;
+                    temp.ClickZ = b;
+                    wallsPlaced.Add(temp);
+                }
+                else if (data[i, b] == 0)
+                {
+                    PlaceGridObj(ground, "Generated Ground", i, b);
+                }
+            }
+        }
+
+        var path = dataGenerator.GetPath(data, new Vector2Int(0, 3), new Vector2Int(0, 3),
+            new Vector2Int((int) railsPlacer.endRail.ClickX, (int) railsPlacer.endRail.ClickZ),
+            new List<Vector2Int> { });
         path.Item1.RemoveAt(path.Item1.Count - 1);
         path.Item1.RemoveAt(0);
         path.Item1.ForEach(p =>
@@ -186,6 +261,7 @@ public class MapGenerator : MonoBehaviour
         GameObject temp = Instantiate(obj, new Vector3(i, num, b), Quaternion.identity);
         temp.tag = name;
     }
+
     private void PlaceGridObj(GameObject obj, string name, int i, int b, int y)
     {
         GameObject temp = Instantiate(obj, new Vector3(i, y, b), Quaternion.identity);
@@ -208,7 +284,6 @@ public class MapGenerator : MonoBehaviour
     }
 
 
-
     public void DisposeOldMaze()
     {
         wallsPlaced.Clear();
@@ -217,51 +292,61 @@ public class MapGenerator : MonoBehaviour
         {
             Destroy(go);
         }
+
         objects = GameObject.FindGameObjectsWithTag("Drill");
         foreach (GameObject go in objects)
         {
             Destroy(go);
         }
+
         objects = GameObject.FindGameObjectsWithTag("Bonus");
         foreach (GameObject go in objects)
         {
             Destroy(go);
         }
+
         objects = GameObject.FindGameObjectsWithTag("train");
         foreach (GameObject go in objects)
         {
             Destroy(go);
         }
+
         objects = GameObject.FindGameObjectsWithTag("Generated Ground");
         foreach (GameObject go in objects)
         {
             Destroy(go);
         }
+
         objects = GameObject.FindGameObjectsWithTag("Rail");
         foreach (GameObject go in objects)
         {
             Destroy(go);
         }
+
         objects = GameObject.FindGameObjectsWithTag("Finish Pos");
         foreach (GameObject go in objects)
         {
             Destroy(go);
         }
+
         objects = GameObject.FindGameObjectsWithTag("Start Pos");
         foreach (GameObject go in objects)
         {
             Destroy(go);
         }
+
         objects = GameObject.FindGameObjectsWithTag("Wall Block");
         foreach (GameObject go in objects)
         {
             Destroy(go);
         }
+
         objects = GameObject.FindGameObjectsWithTag("PointMarker");
         foreach (GameObject go in objects)
         {
             Destroy(go);
         }
+
         Debug.ClearDeveloperConsole();
     }
 
@@ -349,6 +434,7 @@ public class MapGenerator : MonoBehaviour
                     msg += "==";
                 }
             }
+
             msg += "\n";
         }
 

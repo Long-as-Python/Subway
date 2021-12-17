@@ -5,16 +5,19 @@ using UnityEngine;
 public class MazeDataGenerator
 {
     // generator params
-    public float placementThreshold;    // chance of empty space
+    public float placementThreshold; // chance of empty space
 
     public MazeDataGenerator()
     {
         placementThreshold = .1f;
     }
 
-    public int[,] FromDimensions(int sizeRows, int sizeCols)
+    public int[,] FromDimensions(int sizeRows, int sizeCols, int counter)
     {
         int[,] maze = new int[sizeRows, sizeCols];
+
+        
+
 
         int rMax = maze.GetUpperBound(0);
         int cMax = maze.GetUpperBound(1);
@@ -42,23 +45,26 @@ public class MazeDataGenerator
                         maze[i + a, j + b] = 1;
                     }
                 }
-                Debug.Log(maze[i, j]);
+
+                Debug.Log("maze " + maze[i, j]);
             }
         }
 
         return maze;
     }
 
-    public (List<Vector2Int>, bool) GetPath(int[,] maze, Vector2Int curr, Vector2Int skip, Vector2Int finish, List<Vector2Int> currPath)
+    public (List<Vector2Int>, bool) GetPath(int[,] maze, Vector2Int curr, Vector2Int skip, Vector2Int finish,
+        List<Vector2Int> currPath)
     {
         //Debug.Log($"finish: {finish}, curr: {curr}");
 
         if (NearFinish(curr, finish))
         {
-            return (new List<Vector2Int> { finish, curr }, true);
+            return (new List<Vector2Int> {finish, curr}, true);
         }
 
-        if (curr + Vector2Int.right != skip && curr.x < 5 && maze[curr.x + 1, curr.y] == 0 && currPath.Contains(curr) == false)
+        if (curr + Vector2Int.right != skip && curr.x < 5 && maze[curr.x + 1, curr.y] == 0 &&
+            currPath.Contains(curr) == false)
         {
             var lastPath = new List<Vector2Int>(currPath);
             lastPath.Add(curr);
@@ -69,7 +75,9 @@ public class MazeDataGenerator
                 return path;
             }
         }
-        if (curr + Vector2Int.up != skip && curr.y < 5 && maze[curr.x, curr.y + 1] == 0 && currPath.Contains(curr) == false)
+
+        if (curr + Vector2Int.up != skip && curr.y < 5 && maze[curr.x, curr.y + 1] == 0 &&
+            currPath.Contains(curr) == false)
         {
             var lastPath = new List<Vector2Int>(currPath);
             lastPath.Add(curr);
@@ -80,7 +88,9 @@ public class MazeDataGenerator
                 return path;
             }
         }
-        if (curr - Vector2Int.up != skip && curr.y > 1 && maze[curr.x, curr.y - 1] == 0 && currPath.Contains(curr) == false)
+
+        if (curr - Vector2Int.up != skip && curr.y > 1 && maze[curr.x, curr.y - 1] == 0 &&
+            currPath.Contains(curr) == false)
         {
             var lastPath = new List<Vector2Int>(currPath);
             lastPath.Add(curr);
@@ -91,8 +101,9 @@ public class MazeDataGenerator
                 return path;
             }
         }
-        
-        else if (curr - Vector2Int.right != skip && curr.x > 1 && maze[curr.x - 1, curr.y] == 0 && currPath.Contains(curr) == false)
+
+        else if (curr - Vector2Int.right != skip && curr.x > 1 && maze[curr.x - 1, curr.y] == 0 &&
+                 currPath.Contains(curr) == false)
         {
             var lastPath = new List<Vector2Int>(currPath);
             lastPath.Add(curr);
@@ -103,6 +114,7 @@ public class MazeDataGenerator
                 return path;
             }
         }
+
         return (new List<Vector2Int> { }, false);
     }
 
@@ -118,5 +130,4 @@ public class MazeDataGenerator
             return true;
         return false;
     }
-
 }
