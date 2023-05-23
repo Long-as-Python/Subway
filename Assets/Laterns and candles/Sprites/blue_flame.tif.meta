@@ -99,7 +99,7 @@ TextureImporter:
       213: 21300062
     second: blue_flame_31
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -120,6 +120,7 @@ TextureImporter:
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -158,6 +159,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -185,6 +187,18 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 1
   - serializedVersion: 3
     buildTarget: Android
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
+    buildTarget: Server
     maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
@@ -880,6 +894,39 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      blue_flame_0: 21300000
+      blue_flame_1: 21300002
+      blue_flame_10: 21300020
+      blue_flame_11: 21300022
+      blue_flame_12: 21300024
+      blue_flame_13: 21300026
+      blue_flame_14: 21300028
+      blue_flame_15: 21300030
+      blue_flame_16: 21300032
+      blue_flame_17: 21300034
+      blue_flame_18: 21300036
+      blue_flame_19: 21300038
+      blue_flame_2: 21300004
+      blue_flame_20: 21300040
+      blue_flame_21: 21300042
+      blue_flame_22: 21300044
+      blue_flame_23: 21300046
+      blue_flame_24: 21300048
+      blue_flame_25: 21300050
+      blue_flame_26: 21300052
+      blue_flame_27: 21300054
+      blue_flame_28: 21300056
+      blue_flame_29: 21300058
+      blue_flame_3: 21300006
+      blue_flame_30: 21300060
+      blue_flame_31: 21300062
+      blue_flame_4: 21300008
+      blue_flame_5: 21300010
+      blue_flame_6: 21300012
+      blue_flame_7: 21300014
+      blue_flame_8: 21300016
+      blue_flame_9: 21300018
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
